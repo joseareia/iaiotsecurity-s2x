@@ -39,8 +39,32 @@
     </motetype>
     <motetype>
       org.contikios.cooja.contikimote.ContikiMoteType
-      <identifier>mtype482271364</identifier>
+      <identifier>mtype16604291</identifier>
       <description>MQTT Client</description>
+      <source>[CONTIKI_DIR]/examples/mqtt-client/mqtt-client.c</source>
+      <commands>make -j$(CPUS) mqtt-client.cooja TARGET=cooja</commands>
+      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.Battery</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiVib</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiMoteID</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRS232</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiBeeper</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiIPAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRadio</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiButton</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiPIR</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiClock</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiLED</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiCFS</moteinterface>
+      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiEEPROM</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
+    </motetype>
+    <motetype>
+      org.contikios.cooja.contikimote.ContikiMoteType
+      <identifier>mtype476943594</identifier>
+      <description>MQTT Client ::1</description>
       <source>[CONTIKI_DIR]/examples/mqtt-client/mqtt-client.c</source>
       <commands>make -j$(CPUS) mqtt-client.cooja TARGET=cooja</commands>
       <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
@@ -82,26 +106,26 @@
     <mote>
       <interface_config>
         org.contikios.cooja.interfaces.Position
-        <x>-47.223563247895925</x>
-        <y>-46.877597028877474</y>
+        <x>-55.494253163764306</x>
+        <y>-53.60788664143667</y>
         <z>0.0</z>
       </interface_config>
       <interface_config>
         org.contikios.cooja.contikimote.interfaces.ContikiMoteID
-        <id>2</id>
+        <id>3</id>
       </interface_config>
       <interface_config>
         org.contikios.cooja.contikimote.interfaces.ContikiRadio
         <bitrate>250.0</bitrate>
       </interface_config>
       <interface_config>org.contikios.cooja.contikimote.interfaces.ContikiEEPROM</interface_config>
-      <motetype_identifier>mtype482271364</motetype_identifier>
+      <motetype_identifier>mtype476943594</motetype_identifier>
     </mote>
   </simulation>
   <plugin>
     org.contikios.cooja.plugins.SimControl
     <width>280</width>
-    <z>2</z>
+    <z>1</z>
     <height>160</height>
     <location_x>648</location_x>
     <location_y>0</location_y>
@@ -117,7 +141,7 @@
       <skin>org.contikios.cooja.plugins.skins.AttributeVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.AddressVisualizerSkin</skin>
-      <viewport>2.902220284357399 0.0 0.0 2.902220284357399 491.32867565240826 418.32487055489787</viewport>
+      <viewport>3.839517937189663 0.0 0.0 3.839517937189663 588.2428201775028 456.91935142553535</viewport>
     </plugin_config>
     <width>647</width>
     <z>3</z>
@@ -133,7 +157,7 @@
       <coloring />
     </plugin_config>
     <width>1072</width>
-    <z>4</z>
+    <z>2</z>
     <height>465</height>
     <location_x>648</location_x>
     <location_y>160</location_y>
@@ -161,23 +185,10 @@
       <decorations>true</decorations>
     </plugin_config>
     <width>795</width>
-    <z>1</z>
+    <z>4</z>
     <height>160</height>
     <location_x>925</location_x>
     <location_y>0</location_y>
-  </plugin>
-  <plugin>
-    org.contikios.cooja.serialsocket.SerialSocketServer
-    <mote_arg>0</mote_arg>
-    <plugin_config>
-      <port>60001</port>
-      <bound>true</bound>
-    </plugin_config>
-    <width>362</width>
-    <z>0</z>
-    <height>116</height>
-    <location_x>1307</location_x>
-    <location_y>638</location_y>
   </plugin>
 </simconf>
 
