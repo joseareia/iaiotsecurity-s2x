@@ -49,10 +49,7 @@ static char     device_id[17];
 static char     topic_hw[25];
 static char     *topics_mqtt[] = {"/topic_1",
                                   "/topic_2",
-                                  "/topic_3",
-                                  "/topic_4",
-                                  "/topic_5",
-                                  "/topic_6"};
+                                  "/topic_3"};
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
@@ -113,7 +110,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
   while(1) {
       PROCESS_WAIT_EVENT();
       sprintf(pub_test,"%s",topic_hw);
-      mqtt_sn_pub("/topic_1",pub_test,true,0);
+      mqtt_sn_pub("/topic_1", pub_test, true, 0);
       // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
       if (etimer_expired(&time_poll))
         etimer_reset(&time_poll);

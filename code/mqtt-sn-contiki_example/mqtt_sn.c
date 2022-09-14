@@ -161,28 +161,28 @@ void parse_mqtt_type_string(uint8_t type, char **type_string){
 char* mqtt_sn_check_status_string(void){
   switch (mqtt_status) {
     case MQTTSN_DISCONNECTED:
-      return "DESCONECTADO";
+      return "DISCONNECTED";
     break;
     case MQTTSN_WAITING_CONNACK:
-      return "AGUARDANDO CONNACK";
+      return "WAITING CONNACK";
     break;
     case MQTTSN_WAITING_REGACK:
-      return "AGUARDANDO REGACK";
+      return "WAITING REGACK";
     break;
     case MQTTSN_CONNECTED:
-      return "#### CONECTADO ####";
+      return "#### CONNECTED ####";
     break;
     case MQTTSN_TOPIC_REGISTERED:
-      return "TOPICOS REGISTRADOS";
+      return "TOPIC REGISTERED";
     break;
     case MQTTSN_WAITING_WILLTOPICREQ:
-      return "AGUARDANDO WILL TOPIC";
+      return "WAITING WILL TOPIC";
     break;
     case MQTTSN_WAITING_WILLMSGREQ:
-      return "AGUARDANDO WILL MESSAGE";
+      return "WAITING WILL MESSAGE";
     break;
     default:
-      return "ESTADO NAO DESCRITO";
+      return "NO STATE DESCRITED";
     break;
   }
 }
@@ -233,7 +233,7 @@ resp_con_t mqtt_sn_sub_wildcard(char *topic, uint8_t qos){
   subscribe_task.qos_level       = qos;
   topic_temp_wildcard            = topic;
   if (!mqtt_sn_insert_queue(subscribe_task))
-   debug_task("ERRO AO ADICIONAR NA FILA");
+   debug_task("ERROR WHILE ADDING TO QUEUE");
 
   return SUCCESS_CON;
 }
@@ -270,7 +270,7 @@ resp_con_t mqtt_sn_sub(char *topic, uint8_t qos){
     //  ctimer_set(&mqtt_time_subscribe, 3*MQTT_SN_TIMEOUT, init_sub, NULL);
 
     if (!mqtt_sn_insert_queue(subscribe_task))
-     debug_task("ERRO AO ADICIONAR NA FILA");
+     debug_task("ERROR WHILE ADDING TO QUEUE");
 
     return SUCCESS_CON;
   }
@@ -311,23 +311,22 @@ resp_con_t verf_hist_sub(char *topic){
       break;
 
   if (g_topic_bind[i].subscribed == 0x01){  // Na fila para inscrever? 0x01?
-    debug_mqtt("Inscricao do topico em andamento:[%s]",g_topic_bind[i].topic_name);
+    debug_mqtt("Subscribed topic in progress [%s]", g_topic_bind[i].topic_name);
     return FAIL_CON;
   }
   else if (g_topic_bind[i].subscribed == 0x02) {  // Já inscrito? 0x02?
-    debug_mqtt("Topico inscrito:[%s]",g_topic_bind[i].topic_name);
+    debug_mqtt("Subscribed topic: [%s]",g_topic_bind[i].topic_name);
     return FAIL_CON;
   }
   else if (g_topic_bind[i].subscribed == 0x00){  // Caso g_topic_bind[i].subscribed == 0x00 vamos preparar o topico para ser inscrito
     g_topic_bind[i].subscribed = 0x01;
-    debug_mqtt("Preparando para inscricao:[%s]",g_topic_bind[i].topic_name);
+    debug_mqtt("Ready for subscription: [%s]",g_topic_bind[i].topic_name);
     return SUCCESS_CON;
   }
   else{
-    debug_mqtt("Topico com valor estranho no SUBSCRIBED:%d",g_topic_bind[i].subscribed);
+    debug_mqtt("Topic with strange value in SUBSCRIBED: %d",g_topic_bind[i].subscribed);
     return FAIL_CON;
   }
-
 }
 
 resp_con_t verf_register(char *topic){
@@ -336,20 +335,20 @@ resp_con_t verf_register(char *topic){
     if(strcmp(g_topic_bind[i].topic_name,topic) == 0)  // Tópico novo ou existe?
       return SUCCESS_CON;
 
-  debug_mqtt("Topico nao registrado!");
+  debug_mqtt("Topic not subscribed!");
   return FAIL_CON;
 }
 
 void print_g_topics(void){
   size_t i;
-  debug_mqtt("Vetor de topicos");
+  debug_mqtt("Array of topics");
   for(i = 0 ; g_topic_bind[i].short_topic_id != 0xFF; i++) {
     debug_mqtt("[i=%d][%d][%s]",i,g_topic_bind[i].short_topic_id,g_topic_bind[i].topic_name);
   }
 }
 
 void init_vectors(void){
-  debug_mqtt("Inicializando vetores...");
+  debug_mqtt("Initialization of array...");
   size_t i;
   for (i = 1; i < MAX_TOPIC_USED; i++){
     g_topic_bind[i].short_topic_id = 0xFF;
@@ -369,7 +368,7 @@ resp_con_t mqtt_sn_will_topic_send(void){
   size_t topic_name_len = strlen(g_mqtt_sn_con.will_topic);
 
   if (topic_name_len > MQTT_SN_MAX_TOPIC_LENGTH) {
-    debug_mqtt("Erro: Nome do topico WILL excede o limite maximo");
+    debug_mqtt("Error: WILL NAME TOPIC exceeds the maximum limit");
     return FAIL_CON;
   }
 
@@ -381,7 +380,7 @@ resp_con_t mqtt_sn_will_topic_send(void){
   packet.length = 0x03 + topic_name_len;
   packet.will_topic[topic_name_len] = '\0';
 
-  debug_mqtt("Enviando o pacote @WILL TOPIC");
+  debug_mqtt("Sending the packet @WILL TOPIC");
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
 
   return SUCCESS_CON;
@@ -393,7 +392,7 @@ resp_con_t mqtt_sn_will_message_send(void){
   size_t message_name_len = strlen(g_mqtt_sn_con.will_message);
 
   if (message_name_len > MQTT_SN_MAX_TOPIC_LENGTH) {
-    debug_mqtt("Erro: Nome da mensagem WILL excede o limite maximo");
+    debug_mqtt("ERROR: WILL NAME TOPIC exceeds the maximum limit");
     return FAIL_CON;
   }
 
@@ -403,7 +402,7 @@ resp_con_t mqtt_sn_will_message_send(void){
   packet.length = 0x02 + message_name_len;
   packet.will_message[message_name_len] = '\0';
 
-  debug_mqtt("Enviando o pacote @WILL MESSAGE");
+  debug_mqtt("Sending the packet @WILL MESSAGE");
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
 
   return SUCCESS_CON;
@@ -437,7 +436,7 @@ resp_con_t mqtt_sn_con_send(void){
   packet.length = 0x06 + strlen(packet.client_id);
 
   // debug_mqtt("CLIENT_ID:%s, Tamanho:%d",packet.client_id,strlen(packet.client_id));
-  debug_mqtt("Enviando o pacote @CONNECT ");
+  debug_mqtt("Sending the packet @CONNECT");
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
   // debug_mqtt("enviado!");
   return SUCCESS_CON;
@@ -453,16 +452,16 @@ resp_con_t mqtt_sn_reg_send(void){
 
   uint16_t task_id = i;
   // Leak of memory
-  //size_t topic_name_len = strlen(mqtt_queue_first->data.long_topic); //Pega o primeiro da fila aguardando
+  //size_t topic_name_len = strlen(mqtt_queue_first->data.long_topic); //Pega o primeiro da fila WAITING
   size_t topic_name_len = strlen(g_topic_bind[task_id].topic_name);
 
   if (topic_name_len > MQTT_SN_MAX_TOPIC_LENGTH) {
-    debug_mqtt("Erro: Nome do topico excede o limite maximo");
+    debug_mqtt("ERROR: Name of the topic exceeds the maximum limit");
     return FAIL_CON;
   }
 
   if (mqtt_queue_first->data.msg_type_q != MQTT_SN_TYPE_REGISTER) {
-    debug_mqtt("Erro: Pacote a processar nao e do tipo REGISTER");
+    debug_mqtt("ERROR: Packet type is not REGISTER");
     return FAIL_CON;
   }
 
@@ -479,8 +478,8 @@ resp_con_t mqtt_sn_reg_send(void){
   packet.length = 0x06 + topic_name_len;
   packet.topic_name[topic_name_len] = '\0';
 
-  debug_mqtt("Topico a registrar:%s [%d][MSG_ID:%d]",packet.topic_name,strlen(packet.topic_name),(int)mqtt_queue_first->data.id_task);
-  debug_mqtt("Enviando o pacote @REGISTER");
+  debug_mqtt("Topic to register:%s [%d][MSG_ID:%d]",packet.topic_name,strlen(packet.topic_name),(int)mqtt_queue_first->data.id_task);
+  debug_mqtt("Sending the packet @REGISTER");
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
 
   return SUCCESS_CON;
@@ -495,7 +494,7 @@ resp_con_t mqtt_sn_regack_send(uint16_t msg_id, uint16_t topic_id){
   packet.return_code = 0x00;
   packet.length = 0x07;
 
-  debug_mqtt("Enviando o pacote @REGACK");
+  debug_mqtt("Sending the packet @REGACK");
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
   return SUCCESS_CON;
 }
@@ -517,7 +516,7 @@ resp_con_t mqtt_sn_pub_send(char *topic,char *message, bool retain_flag, uint8_t
     }
 
   if (data_len > sizeof(packet.data)) {
-      printf("Erro: Payload e muito grande!\n");
+      printf("ERROR: Payload it's too big!\n");
       return FAIL_CON;
   }
 
@@ -546,7 +545,7 @@ resp_con_t mqtt_sn_pub_send(char *topic,char *message, bool retain_flag, uint8_t
   //
   packet.length = 0x07 + (data_len+1);
 
-  debug_mqtt("Enviando o pacote @PUBLISH");
+  debug_mqtt("Sending the packet @PUBLISH");
   // debug_mqtt("Enviando o pacote @PUBLISH - Task:[%d]",(int)mqtt_queue_first->data.id_task);
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
   return SUCCESS_CON;
@@ -581,7 +580,7 @@ resp_con_t mqtt_sn_sub_send(char *topic, uint8_t qos){
   // | Comprimento - 0 | Tipo de mensagem - 1 | Flags - 2 | Msg ID - 3,4  | Topic ID - 5,6 ou Topic name 5,n ....|
   // |_________________|______________________|___________|_______________|______________________________________|
   //
-  debug_mqtt("Enviando o pacote @SUBSCRIBE");
+  debug_mqtt("Sending the packet @SUBSCRIBE");
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
   return SUCCESS_CON;
 }
@@ -611,7 +610,7 @@ resp_con_t mqtt_sn_sub_send_wildcard(char *topic, uint8_t qos){
   // | Comprimento - 0 | Tipo de mensagem - 1 | Flags - 2 | Msg ID - 3,4  | Topic ID - 5,6 ou Topic name 5,n ....|
   // |_________________|______________________|___________|_______________|______________________________________|
   //
-  debug_mqtt("Enviando o pacote @SUBSCRIBE(Wildcard)");
+  debug_mqtt("Sending the packet @SUBSCRIBE(Wildcard)");
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
   return SUCCESS_CON;
 }
@@ -622,7 +621,7 @@ resp_con_t mqtt_sn_disconnect(uint16_t duration){
   packet.msg_type = MQTT_SN_TYPE_DISCONNECT;
   packet.duration = uip_htons(duration);
   packet.length = 0x04;
-  debug_mqtt("Desconectando do broker...");
+  debug_mqtt("Disconnecting from the broker...");
 
   simple_udp_send(&g_mqtt_sn_con.udp_con,&packet, packet.length);
   return SUCCESS_CON;
@@ -664,7 +663,7 @@ resp_con_t mqtt_sn_insert_queue(mqtt_sn_task_t new){
   //parse_mqtt_type_string(mqtt_queue_first->data.msg_type_q,&task_type_2);
   //debug_task("Task principal:[%2.0d][%s]",(int)mqtt_queue_first->data.id_task,task_type_2);
   parse_mqtt_type_string(temp->data.msg_type_q,&task_type);
-  debug_task("Task adicionada:[%2.0d][%s]",(int)temp->data.id_task, task_type);
+  debug_task("Task added:[%2.0d][%s]",(int)temp->data.id_task, task_type);
   return SUCCESS_CON;
 }
 
@@ -676,14 +675,14 @@ void mqtt_sn_delete_queue(void){
   if (mqtt_queue_first->link == NULL) {
       g_task_id = 0;
       parse_mqtt_type_string(mqtt_queue_first->data.msg_type_q,&task_type);
-      debug_task("Task removida:[%2.0d][%s]",(int)mqtt_queue_first->data.id_task,task_type);
-      debug_task("Task info: Fila vazia");
+      debug_task("Task removed:[%2.0d][%s]",(int)mqtt_queue_first->data.id_task,task_type);
+      debug_task("Task info: Empty queue");
       mqtt_queue_first = mqtt_queue_last = NULL;
   }
   else {
       g_task_id--;
       parse_mqtt_type_string(mqtt_queue_first->data.msg_type_q,&task_type);
-      debug_task("Task removida:[%2.0d][%s]",(int)mqtt_queue_first->data.id_task,task_type);
+      debug_task("Task removed:[%2.0d][%s]",(int)mqtt_queue_first->data.id_task,task_type);
       mqtt_queue_first = mqtt_queue_first->link;
       free(temp);
   }
@@ -696,16 +695,16 @@ void mqtt_sn_check_queue(void){
 
   temp = mqtt_queue_first;
 
-  debug_task("VALOR DO GLOBAL ID g_task_id:%d",g_task_id);
+  debug_task("GOLBAL VALUE ID g_task_id:%d",g_task_id);
 
-  debug_task("FILA:");
+  debug_task("QUEUE:");
   while (temp) {
       parse_mqtt_type_string(temp->data.msg_type_q,&task_type);
       debug_task("[%2.0d][%s][%d]",(int)temp->data.id_task, task_type,temp->data.short_topic);
       temp = temp->link;
       cnt++;
   }
-  debug_task("Tamanho da fila:[%d]", cnt);
+  debug_task("Queue size:[%d]", cnt);
 }
 
 bool mqtt_sn_check_empty(void){
@@ -730,7 +729,7 @@ void mqtt_sn_recv_parser(const uint8_t *data){
           if (mqtt_status == MQTTSN_WAITING_CONNACK)
             process_post(&mqtt_sn_main, mqtt_event_connack, NULL);
           else
-            debug_mqtt("Recebido CONNAC sem requisicao!");
+            debug_mqtt("Received CONNAC without requisition!");
         }
       break;
       case MQTT_SN_TYPE_REGACK:
@@ -750,7 +749,7 @@ void mqtt_sn_recv_parser(const uint8_t *data){
               mqtt_status == MQTTSN_WAITING_REGACK)
             process_post(&mqtt_sn_main, mqtt_event_regack, NULL);
           else
-            debug_mqtt("Recebido REGACK sem requisicao!");
+            debug_mqtt("Received REGACK without requisition!");
         }
       break;
       case MQTT_SN_TYPE_PUBACK:
@@ -773,7 +772,7 @@ void mqtt_sn_recv_parser(const uint8_t *data){
         // só estamos usa-se o [3] porque não consideramos mais do que
         // 15 tópicos
         /// @todo Rever o short topic para adequar bytes [2][3] juntos...
-        debug_mqtt("Recebido SUBACK");
+        debug_mqtt("Received SUBACK");
 
         if (mqtt_sn_check_rc(return_code))
           if (short_topic != 0x00) {
@@ -904,10 +903,10 @@ resp_con_t mqtt_sn_create_sck(mqtt_sn_con_t mqtt_sn_connection, char *topics[], 
     return FAIL_CON;
   }
 
-  debug_mqtt("Endereco do broker IPv6: ");
+  debug_mqtt("Broker address IPv6: ");
   uip_debug_ipaddr_print(&broker_addr);
-  debug_mqtt("Endereco da porta:%d ",g_mqtt_sn_con.udp_port);
-  debug_mqtt("Client ID:%s/%d",g_mqtt_sn_con.client_id,strlen(g_mqtt_sn_con.client_id));
+  debug_mqtt("Port address: %d ",g_mqtt_sn_con.udp_port);
+  debug_mqtt("Client ID: %s/%d",g_mqtt_sn_con.client_id,strlen(g_mqtt_sn_con.client_id));
 
 
   if(!g_recon){
@@ -1001,10 +1000,10 @@ void timeout_con(void *ptr){
       if (g_tries_send >= MQTT_SN_RETRY) {
         g_tries_send = 0;
         process_post(&mqtt_sn_main,mqtt_event_ping_timeout,NULL);
-        debug_mqtt("Limite maximo de pacotes CONNECT");
+        debug_mqtt("Maximum limit of packets CONNECT");
       }
       else{
-        debug_mqtt("Expirou tempo de CONNECT");
+        debug_mqtt("Time of CONNECT expired");
         mqtt_sn_con_send();
         mqtt_status = MQTTSN_WAITING_CONNACK;
         ctimer_reset(&mqtt_time_connect);
@@ -1107,9 +1106,9 @@ PROCESS_THREAD(mqtt_sn_main, ev, data){
       }
       else if(ev == mqtt_event_connack){
         mqtt_status = MQTTSN_CONNECTED;
-        debug_mqtt("Conectado ao broker MQTT-SN");
+        debug_mqtt("CONNECTED ao broker MQTT-SN");
         ctimer_stop(&mqtt_time_connect);
-        mqtt_sn_delete_queue(); // Deleta requisição de CONNECT já que estamos conectados;
+        mqtt_sn_delete_queue(); // Deleta requisição de CONNECT já que estamos CONNECTEDs;
         // Iniciamos o PING Request a partir deste momento
         ctimer_set(&mqtt_time_ping, g_mqtt_sn_con.keep_alive*CLOCK_SECOND , timeout_ping_mqtt, NULL);
         process_post(&mqtt_sn_main, mqtt_event_run_task, NULL);
@@ -1234,7 +1233,7 @@ PROCESS_THREAD(mqtt_sn_main, ev, data){
         ctimer_stop(&mqtt_time_subscribe);
 
         mqtt_status = MQTTSN_DISCONNECTED;
-        debug_mqtt("Desconectado broker");
+        debug_mqtt("DISCONNECTED broker");
         #ifdef MQTT_SN_AUTO_RECONNECT
           g_recon = true;
           init_vectors();
