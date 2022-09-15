@@ -25,10 +25,10 @@ static uint16_t keep_alive = 5;
 static uint16_t broker_address[] = {0xaaaa, 0, 0, 0, 0, 0, 0, 0x1};
 static struct   etimer time_poll;
 // static uint16_t tick_process = 0;
-static char     pub_test[20];
-static char     device_id[17];
-static char     topic_hw[25];
-static char     *topics_mqtt[] = {"/insulin", topic_hw};
+static char pub_test[20];
+static char device_id[17];
+static char topic_hw[25];
+static char *topics_mqtt[] = {"/insulin", topic_hw};
 // static char     *will_topic = "/6lowpan_node/offline";
 // static char     *will_message = "O dispositivo esta offline";
 // This topics will run so much faster than others
@@ -47,7 +47,7 @@ void init_broker(void) {
         linkaddr_node_addr.u8[2],linkaddr_node_addr.u8[3],
         linkaddr_node_addr.u8[4],linkaddr_node_addr.u8[5],
         linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
-    sprintf(topic_hw, "/device_%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
+    sprintf(topic_hw, "/insulin_device_%02X%02X",linkaddr_node_addr.u8[6],linkaddr_node_addr.u8[7]);
 
     mqtt_sn_connection.client_id     = device_id;
     mqtt_sn_connection.udp_port      = udp_port;
@@ -61,7 +61,7 @@ void init_broker(void) {
     mqtt_sn_init();   // Inicializa alocação de eventos e a principal PROCESS_THREAD do MQTT-SN
 
     size_t i;
-    for(i=0;i<ss(topics_mqtt);i++) {
+    for(i = 0; i < ss(topics_mqtt); i++) {
         all_topics[i] = topics_mqtt[i];
     }
     all_topics[i] = topic_hw;
