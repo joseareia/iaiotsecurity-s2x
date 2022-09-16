@@ -88,14 +88,14 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
     etimer_set(&time_poll, CLOCK_SECOND);
 
-    srandom(CLOCK_SECOND);
+    srand(CLOCK_SECOND);
 
     int blood_sugar = 0;
 
     while(1) {
         PROCESS_WAIT_EVENT();
 
-        blood_sugar = random() % 300 + 50;
+        blood_sugar = rand() % 300 + 50;
 
         sprintf(pub_test, "Blood sugar is: %d mg/dL", blood_sugar);
 

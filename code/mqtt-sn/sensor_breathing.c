@@ -88,14 +88,14 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
     etimer_set(&time_poll, CLOCK_SECOND);
 
-    srandom(CLOCK_SECOND);
+    srand(CLOCK_SECOND);
 
     int breathing = 0;
 
     while(1) {
         PROCESS_WAIT_EVENT();
 
-        breathing = random() % 40 + 10;
+        breathing = rand() % 40 + 10;
 
         sprintf(pub_test, "Breathing rate is: %d bpm", breathing);
 
