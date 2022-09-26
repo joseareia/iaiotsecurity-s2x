@@ -102,6 +102,8 @@ PROCESS_THREAD(init_system_process, ev, data) {
         mqtt_sn_pub(topic_hw, pub_test, true, 0);
         mqtt_sn_pub("/breathing", pub_test, true, 0);
 
+        sleep(10);
+
         // debug_os("State MQTT:%s",mqtt_sn_check_status_string());
         if (etimer_expired(&time_poll))
             etimer_reset(&time_poll);
