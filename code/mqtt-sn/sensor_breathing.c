@@ -25,7 +25,7 @@ static uint16_t keep_alive = 5;
 static uint16_t broker_address[] = {0xaaaa, 0, 0, 0, 0, 0, 0, 0x1};
 static struct   etimer time_poll;
 // static uint16_t tick_process = 0;
-static char pub_test[20];
+static char pub_test[100];
 static char device_id[17];
 static char topic_hw[25];
 static char *topics_mqtt[] = {"/breathing", topic_hw};
@@ -88,7 +88,7 @@ PROCESS_THREAD(init_system_process, ev, data) {
 
     etimer_set(&time_poll, CLOCK_SECOND);
 
-    srand(CLOCK_SECOND);
+    srand(10);
 
     int breathing = 0;
 
